@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+.venv/
+
+# SQLite database (recreated automatically on first start)
+database/*.db
+database/*.db-*
+
+# Uploaded progress files
+uploads/*
+!uploads/.gitkeep
+
+# Editors / OS
+.vscode/
+.freebuff/
+.DS_Store
+Thumbs.db

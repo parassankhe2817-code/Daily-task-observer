@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Task Observer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= Header / navigation ================= -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <span class="brand-logo" aria-hidden="true">&#10003;</span>
+                <div class="brand-text">
+                    <strong>Daily Task Observer</strong>
+                    <span>Tasks &amp; daily progress in one place</span>
+                </div>
+            </div>
+            <nav class="nav" aria-label="Main navigation">
+                <button type="button" class="nav-btn active" data-view="dashboard">Dashboard</button>
+                <button type="button" class="nav-btn" data-view="upload">Upload Progress</button>
+                <button type="button" class="nav-btn" data-view="history">Progress History</button>
+                <button type="button" class="nav-btn" data-view="calendar">Calendar</button>
+                <button type="button" class="nav-btn" data-view="statistics">Statistics</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- ================= Dashboard ================= -->
+        <section id="view-dashboard" class="view">
+            <div class="page-head">
+                <h2>Dashboard</h2>
+                <p>Your tasks and progress at a glance.</p>
+            </div>
+
+            <div class="stat-grid" id="dashboardStats">
+                <div class="card loading">Loading dashboard&hellip;</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Today's tasks -->
+                <section class="card">
+                    <div class="card-head">
+                        <h3>Tasks</h3>
+                        <label class="inline-field">Date
+                            <input type="date" id="taskDate">
+                        </label>
+                    </div>
+
+                    <form id="taskForm" class="task-add">
+                        <input type="text" id="taskTitle" maxlength="300"
+                               placeholder="What do you need to do today?" autocomplete="off">
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                    </form>
+
+                    <div id="taskSummary" class="task-summary" hidden>
+                        <div class="progress"><div class="progress-bar" id="taskProgressBar"></div></div>
+                        <p class="hint" id="taskSummaryText"></p>
+                    </div>
+
+                    <ul class="task-list" id="taskList"></ul>
+                    <p class="empty" id="taskEmpty" hidden>No tasks for this day yet. Add one above.</p>
+                </section>
+
+                <!-- Recent progress -->
+                <section class="card">
+                    <div class="card-head">
+                        <h3>Recent Progress</h3>
+                        <button type="button" class="btn btn-ghost btn-sm" data-goto="history">View all</button>
+                    </div>
+                    <ul class="recent-list" id="recentList"></ul>
+                    <p class="empty" id="recentEmpty" hidden>
+                        No progress uploaded yet.<br>
+                        Open <strong>Upload Progress</strong> to save your first update.
+                    </p>
+                </section>
+            </div>
+        </section>
+
+        <!-- ================= Upload progress ================= -->
+        <section id="view-upload" class="view" hidden>
+            <div class="page-head">
+                <h2>Upload Progress</h2>
+                <p>Save a daily .txt update to your tracker.</p>
+            </div>
+
+            <div class="card card-narrow">
+                <form id="uploadForm" class="form">
+                    <div class="form-row">
+                        <label for="uploadFile">Progress file (.txt) <span class="req">*</span></label>
+                        <input type="file" id="uploadFile" name="file" accept=".txt,text/plain">
+                        <p class="hint">Choose a plain text file. Empty or non-.txt files are rejected.</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-row">
+                            <label for="uploadDate">Date <span class="req">*</span></label>
+                            <input type="date" id="uploadDate" name="date">
+                        </div>
+                        <div class="form-row">
+                            <label for="uploadTitle">Title <span class="req">*</span></label>
+                            <input type="text" id="uploadTitle" name="title" maxlength="300"
+                                   placeholder="e.g. Day 12 - Frontend practice">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="uploadTags">Tags</label>
+                        <input type="text" id="uploadTags" name="tags" maxlength="300"
+                               placeholder="e.g. coding, study, health">
+                        <p class="hint">Separate multiple tags with commas.</p>
+                    </div>
+
+                    <p class="form-message" id="uploadMessage" hidden></p>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="uploadBtn">Save Progress</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= Progress history ================= -->
+        <section id="view-history" class="view" hidden>
+            <div class="page-head">
+                <h2>Progress History</h2>
+                <p>Search, sort and filter every upload.</p>
+            </div>
+
+            <div class="card">
+                <div class="toolbar">
+                    <input type="search" id="historySearch" placeholder="Search title, tags or content&hellip;">
+                    <select id="historyTag">
+                        <option value="">All tags</option>
+                    </select>
+                    <select id="historySort">
+                        <option value="newest">Date: newest first</option>
+                        <option value="oldest">Date: oldest first</option>
+                    </select>
+                    <button type="button" class="btn btn-secondary btn-sm" id="historyRefresh">Refresh</button>
+                </div>
+
+                <ul class="history-list" id="historyList"></ul>
+                <p class="empty" id="historyEmpty" hidden>No progress entries yet.</p>
+            </div>
+        </section>
+
+        <!-- ================= Calendar ================= -->
+        <section id="view-calendar" class="view" hidden>
+            <div class="page-head">
+                <h2>Calendar</h2>
+                <p>Days where progress was uploaded. Click a day to see its entries.</p>
+            </div>
+
+            <div class="dashboard-grid calendar-grid">
+                <div class="card">
+                    <div class="card-head">
+                        <button type="button" class="btn btn-secondary btn-sm" id="calPrev">&lsaquo; Prev</button>
+                        <h3 id="calTitle">Month</h3>
+                        <span class="card-head-actions">
+                            <button type="button" class="btn btn-secondary btn-sm" id="calToday">Today</button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="calNext">Next &rsaquo;</button>
+                        </span>
+                    </div>
+
+                    <div class="calendar-weekdays" aria-hidden="true">
+                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+                        <span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+                    <div class="calendar-days" id="calDays">
+                        <div class="loading">Loading calendar&hellip;</div>
+                    </div>
+                    <p class="hint">Highlighted days contain uploaded progress.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <h3 id="calDayTitle">Progress for the selected day</h3>
+                    </div>
+                    <ul class="history-list compact" id="calDayList"></ul>
+                    <p class="empty" id="calDayEmpty">Click a date in the calendar to view its progress.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= Statistics ================= -->
+        <section id="view-statistics" class="view" hidden>
+            <div class="page-head">
+                <h2>Statistics</h2>
+                <p>Everything below is calculated from your stored data.</p>
+            </div>
+
+            <div class="stat-grid" id="statsGrid">
+                <div class="card loading">Loading statistics&hellip;</div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= Progress viewer modal ================= -->
+    <div class="modal-backdrop" id="viewerModal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="viewerHeading">
+            <div class="modal-head">
+                <h3 id="viewerHeading">View Progress</h3>
+                <button type="button" class="icon-btn" id="viewerClose" aria-label="Close">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-row">
+                        <label for="viewerDate">Date</label>
+                        <input type="date" id="viewerDate">
+                    </div>
+                    <div class="form-row">
+                        <label for="viewerTitle">Title</label>
+                        <input type="text" id="viewerTitle" maxlength="300">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="viewerTags">Tags</label>
+                    <input type="text" id="viewerTags" maxlength="300">
+                </div>
+
+                <div class="form-row">
+                    <label for="viewerContent">Progress text</label>
+                    <textarea id="viewerContent" rows="12" spellcheck="false"></textarea>
+                </div>
+
+                <p class="hint" id="viewerMeta"></p>
+                <p class="form-message error" id="viewerMessage" hidden></p>
+            </div>
+
+            <div class="modal-foot">
+                <button type="button" class="btn btn-danger" id="viewerDelete">Delete</button>
+                <span class="modal-foot-right">
+                    <button type="button" class="btn btn-secondary" id="viewerCancel">Close</button>
+                    <button type="button" class="btn btn-primary" id="viewerSave">Save Changes</button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= Toast notifications ================= -->
+    <div class="toast" id="toast" hidden></div>
+
+    <footer class="footer">
+        Daily Task Observer &middot; data stored locally in SQLite
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

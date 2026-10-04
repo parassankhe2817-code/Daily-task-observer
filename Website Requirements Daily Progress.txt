@@ -1,0 +1,45 @@
+Website Requirements: Daily Progress Tracker
+
+Build a simple website where I can upload and manage my daily progress .txt files.
+
+Core Features:
+
+1)Dashboard
+Total days tracked
+Current streak
+Total files
+Recent progress
+
+2)Upload Progress
+
+Upload .txt files
+Select date
+Add title/tags
+Save progress
+
+3)Progress History
+
+Show all uploaded files
+Sort by date
+Search progress
+Filter by tags
+
+4)Progress Viewer
+
+Open and read uploaded file
+Edit progress
+Delete progress
+
+5)Calendar
+
+Show days with uploaded progress
+Click a date to view its progress
+
+6)Statistics
+
+Current streak
+Longest streak
+Weekly/monthly progress
+Total uploads
+
+7) Suggested Stack : Html/Css/javascript + Python backend + SQLite(for database)
