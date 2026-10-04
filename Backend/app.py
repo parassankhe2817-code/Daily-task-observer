@@ -17,8 +17,7 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 from werkzeug.utils import secure_filename
 
-from database import BASE_DIR, UPLOADS_DIR, get_connection, init_db, now_str
-
+from Backend.database import BASE_DIR, UPLOADS_DIR, get_connection, init_db, now_str
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 MAX_UPLOAD_SIZE = 2 * 1024 * 1024  # 2 MB is plenty for text progress files
 HOST = "127.0.0.1"
